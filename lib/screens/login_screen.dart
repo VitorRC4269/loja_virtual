@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:loja_virtual/models/user_model.dart';
 import 'package:loja_virtual/screens/signup_screen.dart';
+import 'package:loja_virtual/screens/signup_screen_google.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -124,6 +126,36 @@ class _LoginScreenState extends State<LoginScreen> {
                           onSucess: _onSucess,
                           onFail: _onFail,
                         );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16.0,
+                  ),
+                  SizedBox(
+                    height: 44.0,
+                    child: RaisedButton(
+                      child: Text(
+                        'Login Google',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                        ),
+                      ),
+                      textColor: Colors.white,
+                      color: Theme.of(context).primaryColor,
+                      onPressed: () async {
+                        //  if (_formKey.currentState.validate()) {}
+
+                        bool existe = await model.signInGoogle();
+                        print('ohoipopoi: ');
+                        print(existe);
+                        if (existe != null) if (existe)
+                          _onSucess();
+                        else {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => SignupScreenGoogle()));
+                        }
                       },
                     ),
                   ),

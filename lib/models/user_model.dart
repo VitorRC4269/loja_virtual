@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class UserModel extends Model {
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+
   FirebaseAuth _auth = FirebaseAuth.instance;
   User firebaseUser;
   Map<String, dynamic> userData = Map();
@@ -69,10 +72,86 @@ class UserModel extends Model {
 
   void signOut() async {
     await _auth.signOut();
+    if (googleSignIn.isSignedIn() != null) googleSignIn.signOut();
+
     userData = Map();
     firebaseUser = null;
 
     notifyListeners();
+  }
+
+  void signUpGoogle(
+      {@required Map<String, dynamic> userData,
+      @required VoidCallback onSucess,
+      @required VoidCallback onFail}) async {
+    isLoading = true;
+    notifyListeners();
+    try {
+      await _saveUserData(userData);
+
+      //await _loadCurrentUser();
+      onSucess();
+      isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      onFail();
+      isLoading = false;
+      notifyListeners();
+    }
+    ;
+  }
+
+  Future<bool> signInGoogle() async {
+    // if (firebaseUser != null) print('caori');
+    isLoading = true;
+    notifyListeners();
+
+    print('tentnado');
+    try {
+      print('1');
+      final GoogleSignInAccount googleSignInAccount =
+          await googleSignIn.signIn();
+      print('2');
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount.authentication;
+      print('3');
+      final AuthCredential credential = GoogleAuthProvider.credential(
+          idToken: googleSignInAuthentication.idToken,
+          accessToken: googleSignInAuthentication.accessToken);
+
+      //AuthResult agora é UserCredential
+      final UserCredential authResult =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      firebaseUser = authResult.user;
+
+      bool existe = false;
+      await FirebaseFirestore.instance
+          .collection('users')
+          .where('email', isEqualTo: firebaseUser.email)
+          .get()
+          .then((value) async {
+        if (value.size >= 1) {
+          existe = true;
+          await _loadCurrentUser();
+        } else
+          existe = false;
+      });
+      // ? true
+      //  : false;
+
+      isLoading = false;
+      notifyListeners();
+      return existe;
+      //print('certin');
+      //return user;
+
+    } catch (error) {
+      print('deumerda');
+      //print(firebaseUser.displayName);
+      isLoading = false;
+      notifyListeners();
+      return null;
+    }
   }
 
   void recoverPass(String email) {

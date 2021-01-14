@@ -2,15 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:loja_virtual/models/user_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-class SignUpScreen extends StatefulWidget {
+class SignupScreenGoogle extends StatefulWidget {
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  _SignupScreenGoogleState createState() => _SignupScreenGoogleState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passController = TextEditingController();
+class _SignupScreenGoogleState extends State<SignupScreenGoogle> {
   final _addressController = TextEditingController();
   final _phoneController = TextEditingController();
 
@@ -21,7 +18,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text('Criar Conta'),
+          title: Text('Dados adicionais'),
           centerTitle: true,
           actions: <Widget>[],
         ),
@@ -36,46 +33,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
               child: ListView(
                 padding: EdgeInsets.all(16.0),
                 children: <Widget>[
-                  TextFormField(
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                      hintText: 'Nome Completo',
-                    ),
-                    validator: (text) {
-                      if (text.isEmpty) return 'Nome inválido';
-                    },
-                  ),
-                  SizedBox(
-                    height: 16.0,
-                  ),
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      hintText: 'E-mail',
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (text) {
-                      if (text.isEmpty || !text.contains('@'))
-                        return 'E-mail inválido';
-                    },
-                  ),
-                  SizedBox(
-                    height: 16.0,
-                  ),
-                  TextFormField(
-                    controller: _passController,
-                    decoration: InputDecoration(
-                      hintText: 'Senha',
-                    ),
-                    obscureText: true,
-                    validator: (text) {
-                      if (text.isEmpty || text.length < 6)
-                        return 'Senha inválida';
-                    },
-                  ),
-                  SizedBox(
-                    height: 16.0,
-                  ),
                   TextFormField(
                     controller: _addressController,
                     decoration: InputDecoration(
@@ -105,7 +62,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     height: 44.0,
                     child: RaisedButton(
                       child: Text(
-                        'Criar Conta',
+                        'Entrar',
                         style: TextStyle(
                           fontSize: 18.0,
                         ),
@@ -115,14 +72,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       onPressed: () {
                         if (_formKey.currentState.validate()) {
                           Map<String, dynamic> userData = {
-                            'name': _nameController.text,
-                            'email': _emailController.text,
+                            'name': model.firebaseUser.displayName,
+                            'email': model.firebaseUser.email,
                             'address': _addressController.text,
                             'phone': _phoneController.text,
                           };
-                          model.signUp(
+                          model.signUpGoogle(
                               userData: userData,
-                              pass: _passController.text,
+                              //    pass: _passController.text,
                               onSucess: _onSucess,
                               onFail: _onFail);
                         }
@@ -139,7 +96,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   void _onSucess() async {
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(
-        content: Text('Usuário criado com sucesso!'),
+        content: Text('Login feito com sucesso!'),
         backgroundColor: Theme.of(context).primaryColor,
         duration: Duration(seconds: 2),
       ),
@@ -152,7 +109,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   void _onFail() {
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(
-        content: Text('Falha ao criar usuário!'),
+        content: Text('Falha ao entrar!'),
         backgroundColor: Colors.redAccent,
         duration: Duration(seconds: 2),
       ),
