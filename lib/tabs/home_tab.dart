@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:loja_virtual/screens/category_screen.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class HomeTab extends StatelessWidget {
+  final PageController pageController;
+  HomeTab(this.pageController);
   @override
   Widget build(BuildContext context) {
     Widget _builderBodyBack() => Container(
@@ -58,10 +61,20 @@ class HomeTab extends StatelessWidget {
                           doc.data()['x'], doc.data()['y']);
                     }).toList(),
                     children: snapshot.data.docs.map((doc) {
-                      return FadeInImage.memoryNetwork(
-                        placeholder: kTransparentImage,
-                        image: doc.data()['image'],
-                        fit: BoxFit.cover,
+                      return GestureDetector(
+                        onTap: () {
+                          //Navigator.of(context).push(MaterialPageRoute(
+                          //   builder: (context) => CategoryScreen()));
+                          //pagecontroller.jumpToPage(page);
+                          //Navigator.of(context).pop();
+                          pageController.jumpToPage(1);
+                          //controller.jumpToPage(page);
+                        },
+                        child: FadeInImage.memoryNetwork(
+                          placeholder: kTransparentImage,
+                          image: doc.data()['image'],
+                          fit: BoxFit.cover,
+                        ),
                       );
                     }).toList(),
                   );

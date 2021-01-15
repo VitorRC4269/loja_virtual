@@ -136,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 44.0,
                     child: RaisedButton(
                       child: Text(
-                        'Login Google',
+                        'Login com Google',
                         style: TextStyle(
                           fontSize: 18.0,
                         ),
@@ -147,8 +147,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         //  if (_formKey.currentState.validate()) {}
 
                         bool existe = await model.signInGoogle();
-                        print('ohoipopoi: ');
-                        print(existe);
+                        // print('ohoipopoi: ');
+                        // print(existe);
                         if (existe != null) if (existe)
                           _onSucess();
                         else {
