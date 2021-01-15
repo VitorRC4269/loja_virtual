@@ -106,15 +106,15 @@ class UserModel extends Model {
     isLoading = true;
     notifyListeners();
 
-    print('tentnado');
+    //print('tentnado');
     try {
-      print('1');
+      //print('1');
       final GoogleSignInAccount googleSignInAccount =
           await googleSignIn.signIn();
-      print('2');
+     // print('2');
       final GoogleSignInAuthentication googleSignInAuthentication =
           await googleSignInAccount.authentication;
-      print('3');
+     // print('3');
       final AuthCredential credential = GoogleAuthProvider.credential(
           idToken: googleSignInAuthentication.idToken,
           accessToken: googleSignInAuthentication.accessToken);
@@ -146,7 +146,7 @@ class UserModel extends Model {
       //return user;
 
     } catch (error) {
-      print('deumerda');
+    //  print('deumerda');
       //print(firebaseUser.displayName);
       isLoading = false;
       notifyListeners();
